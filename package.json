@@ -1,0 +1,31 @@
+{
+  "name": "ybdb",
+  "version": "0.1.0",
+  "description": "YAML Based Database",
+  "main": "index.js",
+  "dependencies": {
+    "js-yaml": "^3.5.3",
+    "lowdb": "^0.12.5"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adius/ybdb.git"
+  },
+  "keywords": [
+    "yaml",
+    "database",
+    "db"
+  ],
+  "author": "Adrian Sieber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adius/ybdb/issues"
+  },
+  "homepage": "https://github.com/adius/ybdb#readme"
+}
