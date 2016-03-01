@@ -11,7 +11,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node tests/main.js"
+    "test": "node tests/main.js",
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",
