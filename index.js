@@ -3,7 +3,6 @@
 const lowdb = require('lowdb')
 const yaml = require('js-yaml')
 
-const asyncFileStorage = require('lowdb/file-async')
 
 const yamlFormat = {
 	serialize: yaml.safeDump,
@@ -11,7 +10,6 @@ const yamlFormat = {
 }
 
 const defaultConfig = {
-	storage: asyncFileStorage,
 	format: yamlFormat,
 	writeOnChange: true,
 	databaseName: 'ybdb',
@@ -19,6 +17,11 @@ const defaultConfig = {
 
 module.exports = class Ybdb {
 	constructor (configObject) {
+
+		if (!configObject) {
+			return lowdb()
+		}
+
 		configObject = Object.assign(
 			{},
 			defaultConfig,
