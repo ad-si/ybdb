@@ -1,0 +1,7 @@
+- name: John Doe
+  birthday: 1962-02-15
+  company: Good Corp
+
+- name: Anna Smith
+  birthday: 1978-08-22
+  company: Evil Corp

@@ -1,0 +1,7 @@
+- name: Good Corp
+  founding-date: 1912-09-05
+  number of employees: 15
+
+- name: Evil Corp
+  founding-date: 1933-04-19
+  number of employees: 65

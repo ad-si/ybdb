@@ -4,6 +4,7 @@
   "description": "YAML Based Database",
   "main": "index.js",
   "dependencies": {
+    "fs-promise": "^2.0.2",
     "js-yaml": "^3.8.2",
     "lowdb": "^0.16.0"
   },
