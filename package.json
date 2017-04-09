@@ -6,6 +6,7 @@
   "dependencies": {
     "fs-promise": "^2.0.2",
     "js-yaml": "^3.8.2",
+    "lodash": "^4.17.4",
     "lowdb": "^0.16.0"
   },
   "directories": {
@@ -13,7 +14,8 @@
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 .",
-    "test": "yarn lint && node tests/main.js",
+    "unit-tests": "find ./tests -iname '*.js' -exec node {} \\;",
+    "test": "yarn lint && yarn unit-tests",
     "prepublish": "yarn test"
   },
   "repository": {
