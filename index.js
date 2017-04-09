@@ -17,53 +17,52 @@ class NoYamlError extends Error {
   }
 }
 
+function readFileOrDir (nodePath) {
+  return fsp
+    .readFile(nodePath)
+    .catch(error => {
+      if (!error.message.includes('EISDIR')) throw error
+
+      return fsp
+        .readdir(nodePath)
+        .then(subNodeNames => {
+          const matches = lodash.intersection(mainFiles, subNodeNames)
+
+          if (!matches.length) throw new NoYamlError()
+
+          return fsp.readFile(path.join(nodePath, matches[0]))
+        })
+    })
+}
+
 const yamlFilesStorage = {
-  read: (storagePath, deserialize) => {
-    return fsp
-      .readdir(storagePath)
-      .then(nodeNames => nodeNames
-        .map(nodeName => {
-          const nodePath = path.join(storagePath, nodeName)
+  read: (storagePath, deserialize) => fsp
+    .readFile(storagePath)
+    .then(deserialize)
+    .catch(error => {
+      if (!error.message.includes('EISDIR')) throw error
 
-          return fsp
-            .readFile(nodePath)
-            .catch(error => {
-              if (!error.message.includes('EISDIR')) throw error
-
-              return fsp
-                .readdir(path.join(storagePath, nodeName))
-                .then(subNodeNames => {
-                  const matches = lodash.intersection(mainFiles, subNodeNames)
-
-                  if (!matches.length) throw new NoYamlError()
-
-                  return fsp.readFile(path.join(nodePath, matches[0]))
-                })
-            })
+      return fsp
+        .readdir(storagePath)
+        .then(nodeNames => nodeNames
+          .map(nodeName => readFileOrDir(path.join(storagePath, nodeName))
             .then(fileContent => {
               const fileData = deserialize(fileContent)
               fileData.localId = path
                 .basename(nodeName, path.extname(nodeName))
               return fileData
             })
-        })
-      )
-      .then(filePromises => Promise.all(filePromises))
-      .then(fileObjects => {
-        return {
-          [path.basename(storagePath, path.extname(storagePath))]: fileObjects,
-        }
-      })
-      .catch(error => {
-        if (!(error instanceof NoYamlError)) throw error
-        return {}
-      })
-  },
-}
-
-const yamlFilesFormat = {
-  serialize: yaml.safeDump,
-  deserialize: yaml.safeLoad,
+          )
+        )
+        .then(filePromises => Promise.all(filePromises))
+    })
+    .then(fileObjects => ({
+      [path.basename(storagePath, path.extname(storagePath))]: fileObjects,
+    }))
+    .catch(error => {
+      if (!(error instanceof NoYamlError)) throw error
+      return {}
+    }),
 }
 
 const yamlFormat = {
@@ -74,7 +73,6 @@ const yamlFormat = {
 const defaultConfig = {
   format: yamlFormat,
   databaseName: 'ybdb',
-  storagePath: null,
 }
 
 module.exports = class Ybdb {
@@ -95,7 +93,7 @@ module.exports = class Ybdb {
 
     if (configObject.storagePath) {
       configObject.storage = yamlFilesStorage
-      configObject.format = yamlFilesFormat
+      configObject.format = yamlFormat
 
       return Promise.resolve(lowdb(configObject.storagePath, configObject))
     }

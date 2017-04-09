@@ -1,56 +1,28 @@
-const fs = require('fs')
 const path = require('path')
 const assert = require('assert')
-
 const Ybdb = require('../index.js')
-
-
-const tempFile = path.join(__dirname, 'temp.yaml')
-const referenceFile = path.join(__dirname, 'reference.yaml')
-const asyncFileStorage = require('lowdb/lib/storages/file-async')
-
-function deleteTestFile () {
-  try {
-    fs.unlinkSync(tempFile)
-  }
-  catch (error) {
-    if (!error.message.includes('no such file')) console.error(error)
-  }
+const expectedData = {
+  contacts: [
+    {
+      name: 'John Doe',
+      birthday: new Date('1962-02-15'),
+      company: 'Good Corp',
+    },
+    {
+      name: 'Anna Smith',
+      birthday: new Date('1978-08-22'),
+      company: 'Evil Corp',
+    },
+  ],
 }
-
-function readFile (filePath) {
-  return fs.readFileSync(filePath, 'utf-8')
-}
-
-deleteTestFile()
-
 
 async function runTest () {
   const database = new Ybdb({
-    storage: asyncFileStorage,
-    storageFile: tempFile,
+    storagePath: path.join(__dirname, 'fixtures/contacts.yaml'),
   })
   const initializedDb = await database.init()
 
-  initializedDb
-    .defaults({
-      songs: [],
-    })
-    .write()
-
-  const songs = await initializedDb
-    .get('songs')
-    .push({title: 'Song One'})
-    .push({title: 'Another Song'})
-    .push({title: 'The Song'})
-    .write()
-
-  assert(songs)
-  assert(
-    readFile(tempFile) === readFile(referenceFile),
-    readFile(tempFile) + ' should equal ' + readFile(referenceFile)
-  )
-  deleteTestFile()
+  assert.deepEqual(initializedDb.getState(), expectedData)
   console.info('YAML file test succeeded ✔︎')
 }
 
