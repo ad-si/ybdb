@@ -16,25 +16,38 @@ npm install --save ybdb
 
 ## Usage
 
-```js
-const Ybdb = require('ybdb')
-const db = new Ybdb({storageFile: path.join(__dirname, 'db.yaml')})
-
-db('songs')
-	.chain()
-	.push({title: 'Song One'})
-	.push({title: 'Another Song'})
-	.push({title: 'The Song'})
-	.value()
-	.then(console.log)
-	.catch(console.error)
-```
-
-`db.yaml`:
+`songs.yaml`:
 
 ```yaml
-songs:
-  - title: Song One
-  - title: Another Song
-  - title: The Song
+title: Song One  length: 02:16
+- title: Another Song
+  length: 01:33
+- title: The Song
+  length: 03:41
+```
+
+```js
+const Ybdb = require('ybdb')
+const database = new Ybdb({
+  storageFile: path.join(__dirname, 'songs.yaml'),
+})
+const initializedDb = await database.init()
+const expectedData = {
+  songs: [
+    {
+      title: Song One
+      length: 02:16
+    },
+    {
+      title: Another Song
+      length: 01:33
+    },
+    {
+      title: The Song
+      length: 03:41
+    }
+  ]
+}
+
+assert.deepEqual(initializedDb.getState(), expectedData)
 ```
