@@ -16,6 +16,10 @@ class NoYamlError extends Error {
     super('Directory does not contain a standard YAML file.')
   }
 }
+const yamlFormat = {
+  deserialize: yaml.safeLoad,
+  serialize: yaml.safeDump,
+}
 
 function readFileOrDir (nodePath) {
   return fsp
@@ -35,8 +39,8 @@ function readFileOrDir (nodePath) {
     })
 }
 
-const yamlFilesStorage = {
-  read: (storagePath, deserialize) => fsp
+function readTree (storagePath, deserialize) {
+  return fsp
     .readFile(storagePath)
     .then(deserialize)
     .catch(error => {
@@ -62,13 +66,24 @@ const yamlFilesStorage = {
     .catch(error => {
       if (!(error instanceof NoYamlError)) throw error
       return {}
-    }),
+    })
 }
 
-const yamlFormat = {
-  deserialize: yaml.safeLoad,
-  serialize: yaml.safeDump,
+function readTrees (storagePaths) {
+  return Promise
+    .all(storagePaths
+      .map(storagePath =>
+        readTree(storagePath, yamlFormat.deserialize)
+      )
+    )
+    .then(dataObjects => Object.assign({}, ...dataObjects))
 }
+
+const yamlTreeStorage = {
+  read: readTree,
+  // write: TODO,
+}
+
 
 const defaultConfig = {
   format: yamlFormat,
@@ -92,10 +107,22 @@ module.exports = class Ybdb {
     )
 
     if (configObject.storagePath) {
-      configObject.storage = yamlFilesStorage
+      configObject.storage = yamlTreeStorage
       configObject.format = yamlFormat
 
       return Promise.resolve(lowdb(configObject.storagePath, configObject))
+    }
+
+    if (configObject.storagePaths) {
+      configObject.storage = yamlTreeStorage
+      configObject.format = yamlFormat
+
+      return readTrees(configObject.storagePaths)
+        .then(data => {
+          const db = lowdb(null, configObject)
+          db.setState(data)
+          return db
+        })
     }
 
     return Promise.resolve(lowdb(

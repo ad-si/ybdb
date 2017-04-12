@@ -19,9 +19,12 @@ npm install --save ybdb
 `songs.yaml`:
 
 ```yaml
-title: Song One  length: 02:16
+- title: Song One
+  length: 02:16
+
 - title: Another Song
   length: 01:33
+
 - title: The Song
   length: 03:41
 ```
@@ -35,16 +38,16 @@ const initializedDb = await database.init()
 const expectedData = {
   songs: [
     {
-      title: Song One
-      length: 02:16
+      title: 'Song One',
+      length: '02:16',
     },
     {
-      title: Another Song
-      length: 01:33
+      title: 'Another Song',
+      length: '01:33',
     },
     {
-      title: The Song
-      length: 03:41
+      title: 'The Song',
+      length: '03:41',
     }
   ]
 }
