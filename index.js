@@ -79,6 +79,10 @@ function readTrees (storagePaths) {
     .then(dataObjects => Object.assign({}, ...dataObjects))
 }
 
+function joinKeys (object) {
+  return [].concat.apply([], Object.values(object))
+}
+
 const yamlTreeStorage = {
   read: readTree,
   // write: TODO,
@@ -120,6 +124,7 @@ module.exports = class Ybdb {
       return readTrees(configObject.storagePaths)
         .then(data => {
           const db = lowdb(null, configObject)
+          if (this.config.joined) data = joinKeys(data)
           db.setState(data)
           return db
         })
