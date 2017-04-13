@@ -42,7 +42,10 @@ function readFileOrDir (nodePath) {
 function readTree (storagePath, deserialize) {
   return fsp
     .readFile(storagePath)
-    .then(deserialize)
+    .then(content => {
+      if (/ya?ml$/.test(storagePath)) throw new NoYamlError()
+      return deserialize(content)
+    })
     .catch(error => {
       if (!error.message.includes('EISDIR')) throw error
 
@@ -50,6 +53,10 @@ function readTree (storagePath, deserialize) {
         .readdir(storagePath)
         .then(nodeNames => nodeNames
           .map(nodeName => readFileOrDir(path.join(storagePath, nodeName))
+            .then(content => {
+              if (/ya?ml$/.test(storagePath)) throw new NoYamlError()
+              return content
+            })
             .then(fileContent => {
               const fileData = deserialize(fileContent)
               fileData.localId = path
