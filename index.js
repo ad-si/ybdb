@@ -43,7 +43,7 @@ function readTree (storagePath, deserialize) {
   return fsp
     .readFile(storagePath)
     .then(content => {
-      if (/ya?ml$/.test(storagePath)) throw new NoYamlError()
+      if (!/ya?ml$/.test(storagePath)) throw new NoYamlError()
       return deserialize(content)
     })
     .catch(error => {
@@ -117,11 +117,12 @@ module.exports = class Ybdb {
       this.config
     )
 
-    if (configObject.storagePath) {
-      configObject.storage = yamlTreeStorage
-      configObject.format = yamlFormat
+    if (configObject.dataLayout) {
+      // TODO
+    }
 
-      return Promise.resolve(lowdb(configObject.storagePath, configObject))
+    if (configObject.storagePath) {
+      configObject.storagePaths = [configObject.storagePath]
     }
 
     if (configObject.storagePaths) {
