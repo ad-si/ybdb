@@ -18,6 +18,8 @@ const expectedData = {
 }
 
 async function runTest () {
+  process.stdout.write('Directories test')
+
   const Ybdb = require('../index.js')
   const database = new Ybdb({
     storagePath: path.join(__dirname, 'fixtures/contact-dirs'),
@@ -26,7 +28,7 @@ async function runTest () {
   const data = initializedDb.getState()
 
   assert.deepEqual(data, expectedData)
-  console.info('Directories test succeeded ✔︎')
+  console.info(' ✔︎')
 }
 
 runTest()

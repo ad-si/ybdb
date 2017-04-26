@@ -2,6 +2,7 @@ const assert = require('assert')
 const Ybdb = require('../index.js')
 
 async function runTest () {
+  process.stdout.write('Main test')
   const database = new Ybdb()
   const initializedDb = await database.init()
 
@@ -26,7 +27,7 @@ async function runTest () {
     `${retrievedAge} instead of 34`
   )
 
-  console.info('Main test succeeded ✔︎')
+  console.info(' ✔︎')
 }
 
 runTest()

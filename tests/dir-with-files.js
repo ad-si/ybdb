@@ -19,13 +19,15 @@ const expectedData = {
 }
 
 async function runTest () {
+  process.stdout.write('YAML files test')
+
   const database = new Ybdb({
     storagePath: path.join(__dirname, 'fixtures/contact-files'),
   })
   const initializedDb = await database.init()
 
   assert.deepEqual(initializedDb.getState(), expectedData)
-  console.info('YAML files test succeeded ✔︎')
+  console.info(' ✔︎')
 }
 
 runTest()

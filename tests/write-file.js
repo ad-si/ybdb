@@ -25,6 +25,8 @@ deleteTestFile()
 
 
 async function runTest () {
+  process.stdout.write('YAML file writing test')
+
   const database = new Ybdb({
     storageFile: tempFile,
   })
@@ -49,7 +51,7 @@ async function runTest () {
     readFile(tempFile) + ' should equal ' + readFile(referenceFile)
   )
   deleteTestFile()
-  console.info('YAML file writing test succeeded ✔︎')
+  console.info(' ✔︎')
 }
 
 runTest()
