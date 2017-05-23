@@ -54,7 +54,7 @@ function readTree (storagePath, deserialize) {
         .then(nodeNames => nodeNames
           .map(nodeName => readFileOrDir(path.join(storagePath, nodeName))
             .then(content => {
-              if (/ya?ml$/.test(storagePath)) throw new NoYamlError()
+              if (!/ya?ml$/.test(nodeName)) throw new NoYamlError()
               return content
             })
             .then(fileContent => {
@@ -63,17 +63,19 @@ function readTree (storagePath, deserialize) {
                 .basename(nodeName, path.extname(nodeName))
               return fileData
             })
+            .catch(loadError => {
+              if (loadError instanceof NoYamlError) return
+              console.error(`Error in file ${nodeName}`)
+              console.error(loadError.reason)
+            })
           )
         )
         .then(filePromises => Promise.all(filePromises))
     })
     .then(fileObjects => ({
-      [path.basename(storagePath, path.extname(storagePath))]: fileObjects,
+      [path.basename(storagePath, path.extname(storagePath))]: fileObjects
+        .filter(Boolean),
     }))
-    .catch(error => {
-      if (!(error instanceof NoYamlError)) throw error
-      return {}
-    })
 }
 
 function readTrees (storagePaths) {
