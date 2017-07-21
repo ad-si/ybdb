@@ -3,7 +3,7 @@ const path = require('path')
 const lowdb = require('lowdb')
 const lodash = require('lodash')
 const yaml = require('js-yaml')
-const fsp = require('fs-promise')
+const fsp = require('fs-extra')
 const mainFiles = [
   // Sorted by descending importance
   'main.yaml',
@@ -34,10 +34,12 @@ function readFileOrDir (nodePath) {
 
           if (!matches.length) throw new NoYamlError()
 
-          return fsp.readFile(path.join(nodePath, matches[0]))
+          const yamlPath = path.join(nodePath, matches[0])
+          return fsp.readFile(yamlPath)
         })
     })
 }
+
 
 function readTree (storagePath, deserialize) {
   return fsp
@@ -53,10 +55,6 @@ function readTree (storagePath, deserialize) {
         .readdir(storagePath)
         .then(nodeNames => nodeNames
           .map(nodeName => readFileOrDir(path.join(storagePath, nodeName))
-            .then(content => {
-              if (!/ya?ml$/.test(nodeName)) throw new NoYamlError()
-              return content
-            })
             .then(fileContent => {
               const fileData = deserialize(fileContent)
               fileData.localId = path
@@ -78,15 +76,18 @@ function readTree (storagePath, deserialize) {
     }))
 }
 
+
 function readTrees (storagePaths) {
-  return Promise
-    .all(storagePaths
-      .map(storagePath =>
-        readTree(storagePath, yamlFormat.deserialize)
-      )
+  const treePromises = storagePaths
+    .map(storagePath =>
+      readTree(storagePath, yamlFormat.deserialize)
     )
+
+  return Promise
+    .all(treePromises)
     .then(dataObjects => Object.assign({}, ...dataObjects))
 }
+
 
 function joinKeys (object) {
   return [].concat.apply([], Object.values(object))
