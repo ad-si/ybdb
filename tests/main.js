@@ -1,4 +1,4 @@
-const assert = require('assert')
+const expect = require('unexpected')
 const Ybdb = require('../index.js')
 
 async function runTest () {
@@ -21,12 +21,7 @@ async function runTest () {
     .value()
     .age
 
-  assert.equal(
-    retrievedAge,
-    34,
-    `${retrievedAge} instead of 34`
-  )
-
+  expect(retrievedAge, 'to equal', 34)
   console.info(' ✔︎')
 }
 

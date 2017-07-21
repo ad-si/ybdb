@@ -1,5 +1,5 @@
 const path = require('path')
-const assert = require('assert')
+const expect = require('unexpected')
 const Ybdb = require('../index.js')
 const expectedData = [
   {
@@ -40,7 +40,7 @@ async function runTest () {
   })
   const initializedDb = await database.init()
 
-  assert.deepEqual(initializedDb.getState(), expectedData)
+  expect(initializedDb.getState(), 'to equal', expectedData)
   console.info(' ✔︎')
 }
 

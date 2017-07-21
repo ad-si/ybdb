@@ -1,5 +1,5 @@
 const path = require('path')
-const assert = require('assert')
+const expect = require('unexpected')
 const expectedData = {
   'contact-dirs': [
     {
@@ -27,7 +27,7 @@ async function runTest () {
   const initializedDb = await database.init()
   const data = initializedDb.getState()
 
-  assert.deepEqual(data, expectedData)
+  expect(data, 'to equal', expectedData)
   console.info(' ✔︎')
 }
 

@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const assert = require('assert')
+const expect = require('unexpected')
 
 const Ybdb = require('../index.js')
 
@@ -45,11 +45,8 @@ async function runTest () {
     .push({title: 'The Song'})
     .write()
 
-  assert(songs)
-  assert(
-    readFile(tempFile) === readFile(referenceFile),
-    readFile(tempFile) + ' should equal ' + readFile(referenceFile)
-  )
+  expect(songs, 'to have length', 3)
+  expect(readFile(tempFile), 'to equal', readFile(referenceFile))
   deleteTestFile()
   console.info(' ✔︎')
 }
