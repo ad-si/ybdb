@@ -3,15 +3,38 @@
 const path = require('path')
 const chalk = require('chalk')
 const prettyjson = require('prettyjson')
-
-
+const clone = require('clone')
 const Config = require('@datatypes/config')
-const config = new Config({
-  appName: 'ybdb',
-})
+
+function reduceObject (data) {
+  const timedObject = {}
+  Object
+    .keys(data)
+    .forEach(key => {
+      const keyString = String(key)
+      const isDatetime = keyString.length > 2 &&
+        String(new Date(keyString)) !== 'Invalid Date'
+
+      if (isDatetime) {
+        timedObject[key] = clone(data[key])
+        delete data[key]
+      }
+    })
+
+  const reducedObject = clone(data)
+
+  if (Object.keys(timedObject).length) {
+    // See https://github.com/adius/eventlang-reduce for explanation
+    for (const timestamp in timedObject) {
+      if (!timedObject.hasOwnProperty(timestamp)) continue
+      Object.assign(reducedObject, timedObject[timestamp])
+    }
+  }
+
+  return reducedObject
+}
 
 async function executeCommand (args = []) {
-
   const renderOptions = {
     keysColor: 'gray',
   }
@@ -35,6 +58,8 @@ async function executeCommand (args = []) {
 
     valuesOfFirstKey
       .forEach(value => {
+        value = reduceObject(value)
+
         if (value.title) {
           console.info(chalk.cyan.underline(value.title))
         }
@@ -48,10 +73,13 @@ async function executeCommand (args = []) {
   }
 }
 
+const config = new Config({
+  appName: 'ybdb',
+})
 config
+  .loadDefaultFiles()
   .loadEnvironment()
   .loadCliArguments()
-  .loadDefaultFiles()
 
 const args = process.argv.slice(2)
 executeCommand(args)
