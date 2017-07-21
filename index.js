@@ -20,10 +20,16 @@ const yamlFormat = {
   deserialize: yaml.safeLoad,
   serialize: yaml.safeDump,
 }
+const yamlPattern = /(ya?ml|json)$/ // JSON is a subset of YAML
+
 
 function readFileOrDir (nodePath) {
   return fsp
     .readFile(nodePath)
+    .then(fileContent => {
+      if (!yamlPattern.test(nodePath)) throw new NoYamlError()
+      return fileContent
+    })
     .catch(error => {
       if (!error.message.includes('EISDIR')) throw error
 
@@ -45,7 +51,7 @@ function readTree (storagePath, deserialize) {
   return fsp
     .readFile(storagePath)
     .then(content => {
-      if (!/ya?ml$/.test(storagePath)) throw new NoYamlError()
+      if (!yamlPattern.test(storagePath)) throw new NoYamlError()
       return deserialize(content)
     })
     .catch(error => {
