@@ -1,8 +1,10 @@
 import js from "@eslint/js"
 import globals from "globals"
+import tseslint from "typescript-eslint"
 
 export default [
   js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -65,8 +67,9 @@ export default [
       "no-script-url": ["warn"],
       "no-sequences": ["warn"],
       "no-shadow": ["warn"],
-      "no-undef": ["warn"],
-      "no-unused-vars": ["warn"],
+      "no-undef": ["off"],
+      "no-unused-vars": ["off"],
+      "@typescript-eslint/no-unused-vars": ["warn"],
       "no-useless-escape": ["warn"],
       "no-var": ["warn"],
       "no-whitespace-before-property": ["warn"],
@@ -94,6 +97,6 @@ export default [
     },
   },
   {
-    ignores: ["node_modules/**"],
+    ignores: ["node_modules/**", "dist/**"],
   },
 ]

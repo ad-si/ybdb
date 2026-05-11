@@ -1,6 +1,7 @@
-const path = require("path")
-const expect = require("unexpected")
-const Ybdb = require("../index.js")
+import path from "path"
+import expect from "unexpected"
+import Ybdb from "../index"
+
 const expectedData = [
   {
     name: "Anna Smith",
@@ -28,7 +29,7 @@ const expectedData = [
   },
 ]
 
-async function runTest () {
+async function runTest (): Promise<void> {
   process.stdout.write("Join multiple YAML file trees")
 
   const database = new Ybdb({

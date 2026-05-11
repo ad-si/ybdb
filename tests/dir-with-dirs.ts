@@ -1,5 +1,7 @@
-const path = require("path")
-const expect = require("unexpected")
+import path from "path"
+import expect from "unexpected"
+import Ybdb from "../index"
+
 const expectedData = {
   "contact-dirs": [
     {
@@ -17,10 +19,9 @@ const expectedData = {
   ],
 }
 
-async function runTest () {
+async function runTest (): Promise<void> {
   process.stdout.write("Directories test")
 
-  const Ybdb = require("../index.js")
   const database = new Ybdb({
     storagePath: path.join(__dirname, "fixtures/contact-dirs"),
   })

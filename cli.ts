@@ -1,13 +1,26 @@
 #! /usr/bin/env node
 
-const path = require("path")
-const chalk = require("chalk")
-const prettyjson = require("prettyjson")
-const clone = require("clone")
+import path from "path"
+import chalk from "chalk"
+import prettyjson from "prettyjson"
+import clone from "clone"
+
+// @datatypes/config has no type declarations
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const Config = require("@datatypes/config")
 
-function reduceObject (data) {
-  const timedObject = {}
+import Ybdb from "./index"
+
+interface ConfigLike {
+  config: Record<string, unknown>
+  loadDefaultFiles: () => ConfigLike
+  loadEnvironment: () => ConfigLike
+  loadCliArguments: () => ConfigLike
+}
+
+
+function reduceObject (data: Record<string, unknown>): Record<string, unknown> {
+  const timedObject: Record<string, unknown> = {}
   Object
     .keys(data)
     .forEach(key => {
@@ -29,14 +42,17 @@ function reduceObject (data) {
       if (!Object.prototype.hasOwnProperty.call(timedObject, timestamp)) {
         continue
       }
-      Object.assign(reducedObject, timedObject[timestamp])
+      Object.assign(
+        reducedObject,
+        timedObject[timestamp] as Record<string, unknown>,
+      )
     }
   }
 
   return reducedObject
 }
 
-async function executeCommand (args = []) {
+async function executeCommand (args: string[] = []): Promise<void> {
   const renderOptions = {
     keysColor: "gray",
   }
@@ -51,23 +67,22 @@ async function executeCommand (args = []) {
   }
 
   const storagePath = path.resolve(args[0] || ".")
-  const Ybdb = require(".")
   const database = new Ybdb({ storagePath })
   try {
     const initializedDb = await database.init()
-    const data = initializedDb.data
+    const data = initializedDb.data as Record<string, unknown[]>
     const valuesOfFirstKey = data[Object.keys(data)[0]]
 
     valuesOfFirstKey
-      .forEach(value => {
-        value = reduceObject(value)
+      .forEach((value: unknown) => {
+        const reduced = reduceObject(value as Record<string, unknown>)
 
-        if (value.title) {
-          console.info(chalk.cyan.underline(value.title))
+        if (reduced.title) {
+          console.info(chalk.cyan.underline(String(reduced.title)))
         }
 
-        delete value.title
-        console.info(prettyjson.render(value, renderOptions) + "\n")
+        delete reduced.title
+        console.info(prettyjson.render(reduced, renderOptions) + "\n")
       })
   }
   catch (error) {
@@ -75,7 +90,7 @@ async function executeCommand (args = []) {
   }
 }
 
-const config = new Config({
+const config: ConfigLike = new Config({
   appName: "ybdb",
 })
 config
