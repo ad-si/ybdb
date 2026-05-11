@@ -1,19 +1,19 @@
-const path = require('path')
+const path = require("path")
 
-const lowdb = require('lowdb')
-const lodash = require('lodash')
-const yaml = require('js-yaml')
-const fsp = require('fs-extra')
+const lowdb = require("lowdb")
+const lodash = require("lodash")
+const yaml = require("js-yaml")
+const fsp = require("fs-extra")
 const mainFiles = [
   // Sorted by descending importance
-  'main.yaml',
-  'index.yaml',
-  'data.yaml',
+  "main.yaml",
+  "index.yaml",
+  "data.yaml",
 ]
 
 class NoYamlError extends Error {
   constructor () {
-    super('Directory does not contain a standard YAML file.')
+    super("Directory does not contain a standard YAML file.")
   }
 }
 const yamlFormat = {
@@ -31,7 +31,7 @@ function readFileOrDir (nodePath) {
       return fileContent
     })
     .catch(error => {
-      if (!error.message.includes('EISDIR')) throw error
+      if (!error.message.includes("EISDIR")) throw error
 
       return fsp
         .readdir(nodePath)
@@ -55,7 +55,7 @@ function readTree (storagePath, deserialize) {
       return deserialize(content)
     })
     .catch(error => {
-      if (!error.message.includes('EISDIR')) throw error
+      if (!error.message.includes("EISDIR")) throw error
 
       return fsp
         .readdir(storagePath)
@@ -71,8 +71,8 @@ function readTree (storagePath, deserialize) {
               if (loadError instanceof NoYamlError) return
               console.error(`Error in file ${nodeName}`)
               console.error(loadError.reason)
-            })
-          )
+            }),
+          ),
         )
         .then(filePromises => Promise.all(filePromises))
     })
@@ -86,7 +86,7 @@ function readTree (storagePath, deserialize) {
 function readTrees (storagePaths) {
   const treePromises = storagePaths
     .map(storagePath =>
-      readTree(storagePath, yamlFormat.deserialize)
+      readTree(storagePath, yamlFormat.deserialize),
     )
 
   return Promise
@@ -107,7 +107,7 @@ const yamlTreeStorage = {
 
 const defaultConfig = {
   format: yamlFormat,
-  databaseName: 'ybdb',
+  databaseName: "ybdb",
 }
 
 module.exports = class Ybdb {
@@ -123,7 +123,7 @@ module.exports = class Ybdb {
     const configObject = Object.assign(
       {},
       defaultConfig,
-      this.config
+      this.config,
     )
 
     if (configObject.dataLayout) {
@@ -149,7 +149,7 @@ module.exports = class Ybdb {
 
     return Promise.resolve(lowdb(
       configObject.storageFile || configObject.databaseName,
-      configObject
+      configObject,
     ))
   }
 }

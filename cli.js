@@ -1,10 +1,10 @@
 #! /usr/bin/env node
 
-const path = require('path')
-const chalk = require('chalk')
-const prettyjson = require('prettyjson')
-const clone = require('clone')
-const Config = require('@datatypes/config')
+const path = require("path")
+const chalk = require("chalk")
+const prettyjson = require("prettyjson")
+const clone = require("clone")
+const Config = require("@datatypes/config")
 
 function reduceObject (data) {
   const timedObject = {}
@@ -13,7 +13,7 @@ function reduceObject (data) {
     .forEach(key => {
       const keyString = String(key)
       const isDatetime = keyString.length > 2 &&
-        String(new Date(keyString)) !== 'Invalid Date'
+        String(new Date(keyString)) !== "Invalid Date"
 
       if (isDatetime) {
         timedObject[key] = clone(data[key])
@@ -26,7 +26,9 @@ function reduceObject (data) {
   if (Object.keys(timedObject).length) {
     // See https://github.com/adius/eventlang-reduce for explanation
     for (const timestamp in timedObject) {
-      if (!timedObject.hasOwnProperty(timestamp)) continue
+      if (!Object.prototype.hasOwnProperty.call(timedObject, timestamp)) {
+        continue
+      }
       Object.assign(reducedObject, timedObject[timestamp])
     }
   }
@@ -36,20 +38,20 @@ function reduceObject (data) {
 
 async function executeCommand (args = []) {
   const renderOptions = {
-    keysColor: 'gray',
+    keysColor: "gray",
   }
   if (args.length === 0) {
-    console.info('ybdb [path]')
+    console.info("ybdb [path]")
     return
   }
 
   if (Object.keys(config.config).length > 0) {
-    console.info('ybdb was executed with following options:')
+    console.info("ybdb was executed with following options:")
     console.info(prettyjson.render(config.config, renderOptions))
   }
 
-  const storagePath = path.resolve(args[0] || '.')
-  const Ybdb = require('.')
+  const storagePath = path.resolve(args[0] || ".")
+  const Ybdb = require(".")
   const database = new Ybdb({ storagePath })
   try {
     const initializedDb = await database.init()
@@ -65,7 +67,7 @@ async function executeCommand (args = []) {
         }
 
         delete value.title
-        console.info(prettyjson.render(value, renderOptions) + '\n')
+        console.info(prettyjson.render(value, renderOptions) + "\n")
       })
   }
   catch (error) {
@@ -74,7 +76,7 @@ async function executeCommand (args = []) {
 }
 
 const config = new Config({
-  appName: 'ybdb',
+  appName: "ybdb",
 })
 config
   .loadDefaultFiles()
