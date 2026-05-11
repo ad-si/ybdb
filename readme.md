@@ -30,9 +30,14 @@ npm install --save ybdb
 ```
 
 ```js
-const Ybdb = require('ybdb')
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import Ybdb from "ybdb"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 const database = new Ybdb({
-  storageFile: path.join(__dirname, 'songs.yaml'),
+  storageFile: path.join(__dirname, "songs.yaml"),
 })
 const initializedDb = await database.init()
 const expectedData = {
@@ -54,3 +59,5 @@ const expectedData = {
 
 assert.deepEqual(initializedDb.data, expectedData)
 ```
+
+This package is ESM-only and ships with TypeScript types.
