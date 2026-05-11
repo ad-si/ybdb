@@ -2,8 +2,15 @@
   "name": "ybdb",
   "version": "0.5.0",
   "description": "YAML Based Database",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "bin": "dist/cli.js",
   "files": [
     "dist",

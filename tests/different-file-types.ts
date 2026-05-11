@@ -1,6 +1,6 @@
 import path from "path"
 import expect from "unexpected"
-import Ybdb from "../index"
+import Ybdb from "../index.js"
 
 const expectedData = {
   "file-types": [
@@ -24,7 +24,7 @@ async function runTest (): Promise<void> {
   process.stdout.write("Test different file types")
 
   const database = new Ybdb({
-    storagePath: path.join(__dirname, "fixtures/file-types"),
+    storagePath: path.join(import.meta.dirname, "fixtures/file-types"),
   })
   const initializedDb = await database.init()
 

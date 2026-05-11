@@ -1,6 +1,6 @@
 import path from "path"
 import expect from "unexpected"
-import Ybdb from "../index"
+import Ybdb from "../index.js"
 
 const expectedData = {
   "contact-dirs": [
@@ -23,7 +23,7 @@ async function runTest (): Promise<void> {
   process.stdout.write("Directories test")
 
   const database = new Ybdb({
-    storagePath: path.join(__dirname, "fixtures/contact-dirs"),
+    storagePath: path.join(import.meta.dirname, "fixtures/contact-dirs"),
   })
   const initializedDb = await database.init()
 

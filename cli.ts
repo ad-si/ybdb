@@ -5,11 +5,9 @@ import clone from "clone"
 import path from "path"
 import prettyjson from "prettyjson"
 
-// @datatypes/config has no type declarations
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const Config = require("@datatypes/config")
+import Config from "@datatypes/config"
 
-import Ybdb from "./index"
+import Ybdb from "./index.js"
 
 interface ConfigLike {
   config: Record<string, unknown>

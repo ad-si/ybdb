@@ -169,6 +169,3 @@ export default class Ybdb {
     return db
   }
 }
-
-module.exports = Ybdb
-module.exports.default = Ybdb

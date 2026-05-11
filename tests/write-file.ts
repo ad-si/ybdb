@@ -2,10 +2,10 @@ import fs from "fs"
 import path from "path"
 import expect from "unexpected"
 
-import Ybdb from "../index"
+import Ybdb from "../index.js"
 
-const tempFile = path.join(__dirname, "temp.yaml")
-const referenceFile = path.join(__dirname, "reference.yaml")
+const tempFile = path.join(import.meta.dirname, "temp.yaml")
+const referenceFile = path.join(import.meta.dirname, "reference.yaml")
 
 function deleteTestFile (): void {
   try {

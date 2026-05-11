@@ -1,5 +1,5 @@
 import expect from "unexpected"
-import Ybdb from "../index"
+import Ybdb from "../index.js"
 
 async function runTest (): Promise<void> {
   process.stdout.write("Main test")
