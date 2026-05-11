@@ -52,5 +52,5 @@ const expectedData = {
   ]
 }
 
-assert.deepEqual(initializedDb.getState(), expectedData)
+assert.deepEqual(initializedDb.data, expectedData)
 ```

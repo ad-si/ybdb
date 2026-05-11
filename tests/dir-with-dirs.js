@@ -25,9 +25,8 @@ async function runTest () {
     storagePath: path.join(__dirname, "fixtures/contact-dirs"),
   })
   const initializedDb = await database.init()
-  const data = initializedDb.getState()
 
-  expect(data, "to equal", expectedData)
+  expect(initializedDb.data, "to equal", expectedData)
   console.info(" ✔︎")
 }
 

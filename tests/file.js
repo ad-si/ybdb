@@ -24,7 +24,7 @@ async function runTest () {
 
   const initializedDb = await database.init()
 
-  expect(initializedDb.getState(), "to equal", expectedData)
+  expect(initializedDb.data, "to equal", expectedData)
   console.info(" ✔︎")
 }
 

@@ -32,20 +32,15 @@ async function runTest () {
   })
   const initializedDb = await database.init()
 
-  initializedDb
-    .defaults({
-      songs: [],
-    })
-    .write()
+  initializedDb.data = { songs: [] }
+  await initializedDb.write()
 
-  const songs = await initializedDb
-    .get("songs")
-    .push({title: "Song One"})
-    .push({title: "Another Song"})
-    .push({title: "The Song"})
-    .write()
+  initializedDb.data.songs.push({title: "Song One"})
+  initializedDb.data.songs.push({title: "Another Song"})
+  initializedDb.data.songs.push({title: "The Song"})
+  await initializedDb.write()
 
-  expect(songs, "to have length", 3)
+  expect(initializedDb.data.songs, "to have length", 3)
   expect(readFile(tempFile), "to equal", readFile(referenceFile))
   deleteTestFile()
   console.info(" ✔︎")

@@ -11,7 +11,7 @@
     "fs-extra": "^11.3.5",
     "js-yaml": "^4.1.1",
     "lodash": "^4.18.1",
-    "lowdb": "^0.16.2",
+    "lowdb": "^7.0.1",
     "prettyjson": "^1.2.5",
     "unexpected": "^13.2.1"
   },

@@ -55,7 +55,7 @@ async function executeCommand (args = []) {
   const database = new Ybdb({ storagePath })
   try {
     const initializedDb = await database.init()
-    const data = initializedDb.getState()
+    const data = initializedDb.data
     const valuesOfFirstKey = data[Object.keys(data)[0]]
 
     valuesOfFirstKey

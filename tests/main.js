@@ -6,19 +6,18 @@ async function runTest () {
   const database = new Ybdb()
   const initializedDb = await database.init()
 
-  initializedDb
-    .defaults({
-      contacts: [
-        {name: "John", age: 45},
-        {name: "Anna", age: 34},
-      ],
-    })
-    .write()
+  initializedDb.data = {
+    contacts: [
+      {name: "John", age: 45},
+      {name: "Anna", age: 34},
+    ],
+  }
+  await initializedDb.write()
 
   const retrievedAge = initializedDb
-    .get("contacts")
-    .find({name: "Anna"})
-    .value()
+    .data
+    .contacts
+    .find(contact => contact.name === "Anna")
     .age
 
   expect(retrievedAge, "to equal", 34)
