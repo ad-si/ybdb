@@ -17,8 +17,8 @@ class NoYamlError extends Error {
   }
 }
 const yamlFormat = {
-  deserialize: yaml.safeLoad,
-  serialize: yaml.safeDump,
+  deserialize: yaml.load,
+  serialize: yaml.dump,
 }
 const yamlPattern = /(ya?ml|json)$/ // JSON is a subset of YAML
 
