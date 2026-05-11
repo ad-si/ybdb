@@ -1,9 +1,9 @@
 #! /usr/bin/env node
 
-import path from "path"
 import chalk from "chalk"
-import prettyjson from "prettyjson"
 import clone from "clone"
+import path from "path"
+import prettyjson from "prettyjson"
 
 // @datatypes/config has no type declarations
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -17,7 +17,6 @@ interface ConfigLike {
   loadEnvironment: () => ConfigLike
   loadCliArguments: () => ConfigLike
 }
-
 
 function reduceObject (data: Record<string, unknown>): Record<string, unknown> {
   const timedObject: Record<string, unknown> = {}

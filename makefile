@@ -13,6 +13,12 @@ typecheck:
 	npx tsc -p tsconfig.test.json
 
 
+.PHONY: format
+format:
+	npx dprint fmt
+	npx eslint --ignore-pattern=.gitignore --fix .
+
+
 .PHONY: lint
 lint:
 	npx eslint --max-warnings 0 .

@@ -1,10 +1,10 @@
 import path from "path"
 
+import fsp from "fs-extra"
+import yaml from "js-yaml"
+import lodash from "lodash"
 import { Low, Memory } from "lowdb"
 import { DataFile } from "lowdb/node"
-import lodash from "lodash"
-import yaml from "js-yaml"
-import fsp from "fs-extra"
 
 const mainFiles = [
   // Sorted by descending importance
@@ -31,7 +31,6 @@ const yamlFormat: YbdbFormat = {
 
 const yamlPattern = /(ya?ml|json)$/ // JSON is a subset of YAML
 
-
 function readFileOrDir (nodePath: string): Promise<Buffer | string> {
   return fsp
     .readFile(nodePath)
@@ -55,9 +54,7 @@ function readFileOrDir (nodePath: string): Promise<Buffer | string> {
     })
 }
 
-
 type ParseFn = (content: string) => unknown
-
 
 function readTree (
   storagePath: string,
@@ -74,21 +71,25 @@ function readTree (
 
       return fsp
         .readdir(storagePath)
-        .then(nodeNames => nodeNames
-          .map(nodeName => readFileOrDir(path.join(storagePath, nodeName))
-            .then(fileContent => {
-              const fileData = parse(fileContent.toString()) as
-                Record<string, unknown>
-              fileData.localId = path
-                .basename(nodeName, path.extname(nodeName))
-              return fileData
-            })
-            .catch((loadError: Error) => {
-              if (loadError instanceof NoYamlError) return
-              console.error(`Error in file ${nodeName}`)
-              console.error((loadError as { reason?: string }).reason)
-            }),
-          ),
+        .then(nodeNames =>
+          nodeNames
+            .map(nodeName =>
+              readFileOrDir(path.join(storagePath, nodeName))
+                .then(fileContent => {
+                  const fileData = parse(fileContent.toString()) as Record<
+                    string,
+                    unknown
+                  >
+                  fileData.localId = path
+                    .basename(nodeName, path.extname(nodeName))
+                  return fileData
+                })
+                .catch((loadError: Error) => {
+                  if (loadError instanceof NoYamlError) return
+                  console.error(`Error in file ${nodeName}`)
+                  console.error((loadError as { reason?: string }).reason)
+                }),
+            ),
         )
         .then(filePromises => Promise.all(filePromises))
     })
@@ -100,7 +101,6 @@ function readTree (
       }
     })
 }
-
 
 function readTrees (
   storagePaths: string[],
@@ -114,17 +114,14 @@ function readTrees (
     .then(dataObjects => Object.assign({}, ...dataObjects))
 }
 
-
 function joinKeys (object: Record<string, unknown[]>): unknown[] {
   return ([] as unknown[]).concat(...Object.values(object))
 }
-
 
 const defaultConfig = {
   format: yamlFormat,
   databaseName: "ybdb",
 }
-
 
 export interface YbdbConfig {
   format?: YbdbFormat
@@ -134,7 +131,6 @@ export interface YbdbConfig {
   storageFile?: string
   joined?: boolean
 }
-
 
 export default class Ybdb {
   config?: YbdbConfig

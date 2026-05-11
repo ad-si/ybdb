@@ -4,7 +4,6 @@ import expect from "unexpected"
 
 import Ybdb from "../index"
 
-
 const tempFile = path.join(__dirname, "temp.yaml")
 const referenceFile = path.join(__dirname, "reference.yaml")
 
@@ -23,7 +22,6 @@ function readFile (filePath: string): string {
 }
 
 deleteTestFile()
-
 
 async function runTest (): Promise<void> {
   process.stdout.write("YAML file writing test")
